@@ -1,0 +1,277 @@
+[
+    {
+        "CourseName" : "LA",
+        "CreditHours" : 4,
+        "Prerequisites" : []
+    },
+    {
+        "CourseName" : "DM",
+        "CreditHours" : 3,
+        "Prerequisites" : []
+    },
+    {
+        "CourseName" : "PH1",
+        "CreditHours" : 3,
+        "Prerequisites" : []
+    },
+    {
+        "CourseName" : "IAP",
+        "CreditHours" : 3,
+        "Prerequisites" : []
+    },
+    {
+        "CourseName" : "CAL1",
+        "CreditHours" : 4,
+        "Prerequisites" : []
+    },
+    {
+        "CourseName" : "CAL2",
+        "CreditHours" : 4,
+        "Prerequisites" : ["CAL1"]
+    },
+    {
+        "CourseName" : "PS",
+        "CreditHours" : 3,
+        "Prerequisites" : ["CAL2", "DM"]
+    },
+    {
+        "CourseName" : "PR1",
+        "CreditHours" : 4,
+        "Prerequisites" : ["IAP"]
+    },
+    {
+        "CourseName" : "PR2",
+        "CreditHours" : 3,
+        "Prerequisites" : ["PR1"]
+    },
+    {
+        "CourseName" : "ADS",
+        "CreditHours" : 3,
+        "Prerequisites" : ["PR1"]
+    },
+    {
+        "CourseName" : "DB1",
+        "CreditHours" : 3,
+        "Prerequisites" : ["PR1"]
+    },
+    {
+        "CourseName" : "LC",
+        "CreditHours" : 4,
+        "Prerequisites" : ["DM", "PH1"]
+    },
+    {
+        "CourseName" : "CO",
+        "CreditHours" : 3,
+        "Prerequisites" : ["LC"]
+    },
+    {
+        "CourseName" : "CA",
+        "CreditHours" : 3,
+        "Prerequisites" : ["CO"]
+    },
+    {
+        "CourseName" : "DCO",
+        "CreditHours" : 3,
+        "Prerequisites" : ["ADS", "PS"]
+    },
+    {
+        "CourseName" : "NA",
+        "CreditHours" : 3,
+        "Prerequisites" : ["LA"]
+    },
+    {
+        "CourseName" : "SP",
+        "CreditHours" : 3,
+        "Prerequisites" : ["PR2", "CA"]
+    },
+    {
+        "CourseName" : "CTH",
+        "CreditHours" : 3,
+        "Prerequisites" : ["PR2", "DM"]
+    },
+    {
+        "CourseName" : "PL",
+        "CreditHours" : 3,
+        "Prerequisites" : ["ADS", "CTH"]
+    },
+    {
+        "CourseName" : "AAD",
+        "CreditHours" : 3,
+        "Prerequisites" : ["ADS"]
+    },
+    {
+        "CourseName" : "SAD",
+        "CreditHours" : 3,
+        "Prerequisites" : ["DB1"]
+    },
+    {
+        "CourseName" : "SW1",
+        "CreditHours" : 3,
+        "Prerequisites" : ["SAD"]
+    },
+    {
+        "CourseName" : "SW2",
+        "CreditHours" : 3,
+        "Prerequisites" : ["SW1"]
+    },
+    {
+        "CourseName" : "PLP",
+        "CreditHours" : 3,
+        "Prerequisites" : ["OS1"]
+    },
+    {
+        "CourseName" : "CL",
+        "CreditHours" : 1,
+        "Prerequisites" : []
+    },
+    {
+        "CourseName" : "OR",
+        "CreditHours" : 3,
+        "Prerequisites" : ["PS"]
+    },
+    {
+        "CourseName" : "CG",
+        "CreditHours" : 3,
+        "Prerequisites" : ["ADS"]
+    },
+    {
+        "CourseName" : "AI",
+        "CreditHours" : 4,
+        "Prerequisites" : ["ADS"]
+    },
+    {
+        "CourseName" : "ML",
+        "CreditHours" : 3,
+        "Prerequisites" : ["EXP"]
+    },
+    {
+        "CourseName" : "EXP",
+        "CreditHours" : 3,
+        "Prerequisites" : ["AI"]
+    },
+    {
+        "CourseName" : "NN",
+        "CreditHours" : 3,
+        "Prerequisites" : ["AI"]
+    },
+    {
+        "CourseName" : "FZL",
+        "CreditHours" : 3,
+        "Prerequisites" : ["AI"]
+    },
+    {
+        "CourseName" : "CG",
+        "CreditHours" : 3,
+        "Prerequisites" : ["ADS"]
+    },
+    {
+        "CourseName" : "CN",
+        "CreditHours" : 4,
+        "Prerequisites" : ["DCO"]
+    },
+    {
+        "CourseName" : "CG",
+        "CreditHours" : 3,
+        "Prerequisites" : ["ADS"]
+    },
+    {
+        "CourseName" : "OS1",
+        "CreditHours" : 3,
+        "Prerequisites" : ["SP"]
+    },
+    {
+        "CourseName" : "OS2",
+        "CreditHours" : 3,
+        "Prerequisites" : ["OS1"]
+    },
+    {
+        "CourseName" : "DB2",
+        "CreditHours" : 3,
+        "Prerequisites" : ["DB1"]
+    },
+    {
+        "CourseName" : "ADB",
+        "CreditHours" : 3,
+        "Prerequisites" : ["DB2"]
+    },
+    {
+        "CourseName" : "DSSM",
+        "CreditHours" : 3,
+        "Prerequisites" : ["ADS", "OR"]
+    },
+    {
+        "CourseName" : "CS",
+        "CreditHours" : 3,
+        "Prerequisites" : []
+    },
+    {
+        "CourseName" : "IT",
+        "CreditHours" : 3,
+        "Prerequisites" : ["PR2", "DB1"]
+    },
+    {
+        "CourseName" : "CG",
+        "CreditHours" : 3,
+        "Prerequisites" : ["ADS"]
+    },
+    {
+        "CourseName" : "NLP",
+        "CreditHours" : 3,
+        "Prerequisites" : ["AI", "CD"]
+    },
+    {
+        "CourseName" : "MM",
+        "CreditHours" : 3,
+        "Prerequisites" : ["CG"]
+    },
+    {
+        "CourseName" : "VR",
+        "CreditHours" : 3,
+        "Prerequisites" : ["CG", "AI"]
+    },
+    {
+        "CourseName" : "CD",
+        "CreditHours" : 3,
+        "Prerequisites" : ["CTH"]
+    },
+    {
+        "CourseName" : "ISS",
+        "CreditHours" : 3,
+        "Prerequisites" : ["OS1", "CN"]
+    },
+    {
+        "CourseName" : "EEC",
+        "CreditHours" : 3,
+        "Prerequisites" : ["PH1"]
+    },
+    {
+        "CourseName" : "INTH",
+        "CreditHours" : 3,
+        "Prerequisites" : ["PS"]
+    },
+    {
+        "CourseName" : "DIS",
+        "CreditHours" : 3,
+        "Prerequisites" : ["OS1"]
+    },
+    {
+        "CourseName" : "IPA",
+        "CreditHours" : 3,
+        "Prerequisites" : ["MM"]
+    },
+    {
+        "CourseName" : "CV",
+        "CreditHours" : 3,
+        "Prerequisites" : ["CG", "IPA"]
+    },
+    {
+        "CourseName" : "ACN",
+        "CreditHours" : 3,
+        "Prerequisites" : ["CN"]
+    },
+    {
+        "CourseName" : "NAD",
+        "CreditHours" : 3,
+        "Prerequisites" : ["OS1"]
+    }
+]

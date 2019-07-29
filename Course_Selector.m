@@ -1,0 +1,360 @@
+function varargout = Course_Selector(varargin)
+    gui_Singleton = 1;
+    gui_State = struct('gui_Name',       mfilename, ...
+                       'gui_Singleton',  gui_Singleton, ...
+                       'gui_OpeningFcn', @Course_Selector_OpeningFcn, ...
+                       'gui_OutputFcn',  @Course_Selector_OutputFcn, ...
+                       'gui_LayoutFcn',  [], ...
+                       'gui_Callback',   []);
+    if nargin && ischar(varargin{1})
+       gui_State.gui_Callback = str2func(varargin{1});
+    end
+
+    if nargout
+        [varargout{1:nargout}] = gui_mainfcn(gui_State, varargin{:});
+    else
+        gui_mainfcn(gui_State, varargin{:});
+    end
+    % End initialization code - DO NOT EDIT
+
+    %{
+    Keys = keys(SubjectsInfo);
+    for i=1:SubjectsInfo.Count
+        k = Keys(i);
+        disp(k{1});
+        disp(SubjectsInfo(k{1}).CreditHours);
+        Temp = SubjectsInfo(k{1}).Prerequisites;
+        for j=1:length(Temp)
+            disp(Temp(j));
+        end
+    end
+    %}
+end
+
+function Course_Selector_OpeningFcn(hObject, eventdata, handles, varargin)
+    handles.output = hObject;
+
+    addpath('jsonlab');
+
+    handles.SubjectsInfo = containers.Map();
+    handles.Speciality = 1;
+    handles.GPA = 2;
+    handles.Data = loadjson('data.json');
+    handles.MaximiumAllowedCreditHours = 18;
+    handles.IsStudentInformationFormSubmitted = false;
+
+    % Update handles structure
+    guidata(hObject, handles);
+
+    CreditsPrerequisitesStruct = struct('CreditHours', 0, 'Prerequisites', []);
+
+    Data = handles.Data;
+    for i=1:length(Data)
+        CourseName = Data{1,i}.CourseName;
+        CreditHours = Data{1,i}.CreditHours;
+        Prerequisites = Data{1,i}.Prerequisites;
+
+        CreditsPrerequisitesStruct.CreditHours = CreditHours;
+        CreditsPrerequisitesStruct.Prerequisites = Prerequisites;
+
+        handles.SubjectsInfo(CourseName) = CreditsPrerequisitesStruct;
+    end
+
+    TableData = get(handles.PreviousCourses_Table, 'Data');
+    ColumnFormat = {'logical', 'char'};
+    ColumnEditable = [true false];
+    set(handles.PreviousCourses_Table, 'ColumnFormat', ColumnFormat);
+    set(handles.PreviousCourses_Table, 'ColumnEditable', ColumnEditable);
+
+    Keys = keys(handles.SubjectsInfo);
+    for i=1:handles.SubjectsInfo.Count
+        key = Keys(i);
+        TableData{i, 1} = false;
+        TableData{i, 2} = key{1};
+
+        %{
+        Temp = SubjectsInfo(key{1}).Prerequisites;
+        for j=1:length(Temp)
+            disp(Temp(j));
+        end
+        %}
+    end
+
+    set(handles.PreviousCourses_Table, 'Data', TableData);
+
+    ColumnFormat = {'logical', 'char', 'numeric'};
+    ColumnEditable = [true false false];
+    set(handles.OpenedCourses_Table, 'ColumnFormat', ColumnFormat);
+    set(handles.OpenedCourses_Table, 'ColumnEditable', ColumnEditable);
+
+    TableData = get(handles.OpenedCourses_Table, 'Data');
+    SubjectsInfo = handles.SubjectsInfo;
+    Keys = keys(SubjectsInfo);
+    for i=1:SubjectsInfo.Count
+        key = Keys(i);
+        TableData{i, 1} = false;
+        TableData{i, 2} = key{1};
+        TableData{i, 3} = SubjectsInfo(key{1}).CreditHours;
+
+        %{
+        Temp = SubjectsInfo(key{1}).Prerequisites;
+        for j=1:length(Temp)
+            disp(Temp(j));
+        end
+        %}
+    end
+
+    set(handles.OpenedCourses_Table, 'Data', TableData);
+    guidata(hObject, handles);
+end
+
+function varargout = Course_Selector_OutputFcn(hObject, eventdata, handles)
+    varargout{1} = handles.output;
+end
+
+function Speciality_PopUpMenu_Callback(hObject, eventdata, handles)
+    handles.Speciality = get(hObject, 'Value');
+    guidata(hObject, handles);
+end
+
+function StudentInformation_ClearButton_Callback(hObject, eventdata, handles)
+    handles.Speciality = 1;
+    handles.GPA = 2;
+    handles.MaximiumAllowedCreditHours = 18;
+    handles.IsStudentInformationFormSubmitted = false;
+    guidata(hObject, handles);
+    SubjectsInfo = handles.SubjectsInfo;
+
+    TableData = get(handles.PreviousCourses_Table, 'Data');
+    for i=1:SubjectsInfo.Count
+        TableData{i, 1} = false;
+    end
+    set(handles.PreviousCourses_Table, 'Data', TableData);
+
+    set(handles.Speciality_PopUpMenu, 'Value', handles.Speciality);
+    set(handles.GPA_Input, 'String', 2);
+    set(handles.MaximiumAllowedCreditHours_Label, 'String', handles.MaximiumAllowedCreditHours);
+    guidata(hObject, handles);
+end
+
+function StudentInformation_SubmitButton_Callback(hObject, eventdata, handles)
+    Flag = true;
+    [Flag, ErrorMessage] = IsValidGPA(get(handles.GPA_Input, 'String'));
+    if handles.Speciality == 1
+        Flag = false;
+        ErrorMessage = [ErrorMessage '\nYou must select a speciality.'];
+    end
+    
+    if Flag == false
+        ErrorMessage = sprintf(ErrorMessage);
+        msgbox(ErrorMessage, 'Error', 'error');
+    else
+        
+        if handles.GPA < 2
+            handles.MaximiumAllowedCreditHours = 12;
+            guidata(hObject, handles);
+        elseif handles.GPA >= 2 && handles.GPA < 3
+            handles.MaximiumAllowedCreditHours = 18;
+            guidata(hObject, handles);
+        elseif handles.GPA >= 3
+            handles.MaximiumAllowedCreditHours = 21;
+            guidata(hObject, handles);
+        end
+        
+        SubjectsInfo = handles.SubjectsInfo;
+
+        TableData = get(handles.PreviousCourses_Table, 'Data');
+        CoursesList = [];
+        PreviousCoursesCount = 0;
+        for i=1:SubjectsInfo.Count
+            if TableData{i, 1} == true
+                CoursesList = [CoursesList TableData{i, 2} ' '];
+                PreviousCoursesCount = PreviousCoursesCount + 1;
+            end
+        end
+        handles.IsStudentInformationFormSubmitted = true;
+
+        TempMessage = sprintf('List of previous courses: %s\n\nNumber of previous courses: %d\n', CoursesList, PreviousCoursesCount);
+        msgbox(TempMessage);
+        guidata(hObject, handles);
+    end
+    guidata(hObject, handles);
+end
+
+function OpenCourses_ClearButton_Callback(hObject, eventdata, handles)
+    SubjectsInfo = handles.SubjectsInfo;
+    TableData = get(handles.OpenedCourses_Table, 'Data');
+    for i=1:SubjectsInfo.Count
+        TableData{i, 1} = false;
+    end
+    set(handles.OpenedCourses_Table, 'Data', TableData);
+    set(handles.CurrentCreditHours_Label, 'String', 0);
+    guidata(hObject, handles);
+end
+
+function OpenCourses_SubmitButton_Callback(hObject, eventdata, handles)
+    Flag = true;
+    ErrorMessage = '';
+    CurrentCreditHours = get(handles.CurrentCreditHours_Label, 'String');
+    %msgbox(num2str(handles.MaximiumAllowedCreditHours));
+    CurrentCreditHours = str2double(CurrentCreditHours);
+    if CurrentCreditHours > handles.MaximiumAllowedCreditHours
+        Flag = false;
+        ErrorMessage = 'You have exceeded the allowed credit hours for your GPA.\n';
+    end
+    
+    
+    
+    if Flag == false
+        msgbox(ErrorMessage);
+    end
+    SubjectsInfo = handles.SubjectsInfo;
+
+    TableData = get(handles.OpenedCourses_Table, 'Data');
+    PreviousCourses = GetPreviousCourses(handles);
+    CoursesList = [];
+    UnregisteredCourses = [];
+    Keys = keys(SubjectsInfo);
+    temp = [];
+    IsOk = true;
+    for i=1:SubjectsInfo.Count
+        key = Keys(i);
+        if TableData{i, 1} == true
+            CourseName = key{1};
+            Prerequisites = SubjectsInfo(CourseName).Prerequisites;
+            PrerequisitesSatisfied = true;
+            for j=1:length(Prerequisites)
+                if PreviousCourses(Prerequisites{j}) == false
+                    PrerequisitesSatisfied = false;
+                    break;
+                end
+            end
+            if PrerequisitesSatisfied == false
+                IsOk = false;
+                temp_prerequisites = [];
+                for j=1:length(Prerequisites)
+                    temp_prerequisites = [Prerequisites{j} ' ' temp_prerequisites];
+                end
+                temp = [sprintf('%s Has the following prerequisites: %s\n', CourseName, temp_prerequisites) temp];
+                Table{i, 1} = false;
+                set(handles.OpenedCourses_Table, 'Data', TableData);
+                guidata(hObject, handles);
+            end
+        	%CoursesList = [CoursesList CourseName ' '];
+        end
+    end
+    if (IsOk == false)
+        msgbox(temp);
+    else
+        msgbox('You have been registered successfully');
+    end
+    guidata(hObject, handles);
+end
+
+function GPA_Input_Callback(hObject, eventdata, handles)
+    GPA_Value = get(hObject, 'String');
+    [Flag, ErrorMessage] = IsValidGPA(GPA_Value);
+    if Flag == false
+        %msgbox(ErrorMessage, 'Error', 'error');
+        set(handles.MaximiumAllowedCreditHours_Label, 'String', 'N/A');
+    else
+        GPA_Value = str2double(GPA_Value);
+        if GPA_Value < 2
+            handles.MaximiumAllowedCreditHours = 12;
+            guidata(hObject, handles);
+        elseif GPA_Value >= 2 && GPA_Value < 3
+            handles.MaximiumAllowedCreditHours = 18;
+            guidata(hObject, handles);
+        elseif GPA_Value >= 3
+            handles.MaximiumAllowedCreditHours = 21;
+            guidata(hObject, handles);
+        end
+        handles.GPA = GPA_Value;
+        set(handles.MaximiumAllowedCreditHours_Label, 'String', handles.MaximiumAllowedCreditHours);
+        guidata(hObject, handles);
+    end
+    guidata(hObject, handles);
+end
+
+function OpenedCourses_Table_CellEditCallback(hObject, eventdata, handles)
+    TableData = get(handles.OpenedCourses_Table, 'Data');
+    if handles.IsStudentInformationFormSubmitted == false
+        TableData{eventdata.Indices(1),1} = false;
+        msgbox('You must submit the information form first', 'Error', 'error');
+        set(handles.OpenedCourses_Table, 'Data', TableData);
+    else
+        SubjectsInfo = handles.SubjectsInfo;
+        Keys = keys(SubjectsInfo);
+        Count = 0;
+        for i=1:SubjectsInfo.Count
+            if TableData{i, 1} == true
+                Count = Count + 1;
+            end
+        end
+        RegisteredCreditHours = GetRegisteredCreditHours(TableData, handles);
+        set(handles.CurrentCreditHours_Label, 'String', RegisteredCreditHours);
+    end
+    guidata(hObject, handles);
+end
+
+function[RegisteredCreditHours] = GetRegisteredCreditHours(TableData, handles)
+    SubjectsInfo = handles.SubjectsInfo;
+    RegisteredCreditHours = 0;
+    Keys = keys(SubjectsInfo);
+
+    for i=1:SubjectsInfo.Count
+        key = Keys(i);
+        if TableData{i, 1} == true
+            RegisteredCreditHours = RegisteredCreditHours + SubjectsInfo(key{1}).CreditHours;
+        end
+    end
+end
+
+function[Flag, ErrorMessage] = IsValidGPA(GPA)
+    GPA_Value = str2double(GPA);
+    Flag = true;
+    ErrorMessage = '';
+    
+    if isnan(GPA_Value)
+        ErrorMessage = sprintf('Invalid value entered in GPA field.\nValue must represent a valid positive double.');
+        Flag = false;
+    elseif GPA_Value > 4
+        ErrorMessage = 'GPA value must be less than or equal to 4.';
+        Flag = false;
+    elseif GPA_Value < 0
+        ErrorMessage = 'GPA value must be greater than 0.';
+        Flag = false;
+    end
+end
+
+function[PreviousCourses] = GetPreviousCourses(handles)
+    PreviousCourses = containers.Map();
+    TableData = get(handles.PreviousCourses_Table, 'Data');
+    CoursesList = [];
+    SubjectsInfo = handles.SubjectsInfo;
+    Keys = keys(SubjectsInfo);
+    for i=1:SubjectsInfo.Count
+        key = Keys(i);
+        if TableData{i, 1} == true
+            PreviousCourses(key{1}) = true;
+        else
+            PreviousCourses(key{1}) = false;
+        end
+    end
+end
+
+function OpenedCourses_CreateFcn(hObject, eventdata, handles)
+
+end
+
+function Speciality_PopUpMenu_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
+
+function GPA_Input_CreateFcn(hObject, eventdata, handles)
+    if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+        set(hObject,'BackgroundColor','white');
+    end
+end
